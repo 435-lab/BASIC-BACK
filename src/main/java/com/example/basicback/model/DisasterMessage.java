@@ -14,5 +14,5 @@ public class DisasterMessage {
     private String locationName;
     private String message;
     private String md101Sn;
-    private LocalDateTime createDate;
+    private LocalDateTime createDate1;
 }
