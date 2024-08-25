@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Message> register(HttpServletRequest request, @RequestBody UserDto userDto) {
         log.debug("Accessed IP : {}", request.getRemoteAddr());
-        log.debug("id : {}, birth : {}, name : {}, gender : {}, address : {}", userDto.getId(), userDto.getBirth(), userDto.getName(), userDto.getGender(), userDto.getAddress());
+        log.debug("id : {}, birth : {}, name : {}, gender : {}", userDto.getId(), userDto.getBirth(), userDto.getName(), userDto.getGender());
 
         ResponseEntity<Message> response = userService.register(userDto);
 
@@ -60,7 +60,7 @@ public class UserController {
     @PutMapping("/change/{id}")
     public ResponseEntity<Message> changeInfo(HttpServletRequest request, @PathVariable String id, @RequestBody UserDto userDto) {
         log.debug("Accessed IP : {}", request.getRemoteAddr());
-        log.debug("id : {}, name : {}, birth : {}, gender : {}, address : {}", id, userDto.getName(), userDto.getBirth(), userDto.getGender(), userDto.getAddress());
+        log.debug("id : {}, name : {}, birth : {}, gender : {}", id, userDto.getName(), userDto.getBirth(), userDto.getGender());
 
         ResponseEntity<Message> response = userService.changeInfo(id, userDto);
 

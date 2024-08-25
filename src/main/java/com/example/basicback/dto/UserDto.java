@@ -20,7 +20,6 @@ public class UserDto {
     private LocalDate birth;
     private String name;
     private String gender; // 성별을 문자열로 변경
-    private List<String> address; // 주소를 문자열 리스트로 변경
     @JsonProperty("last_login")
     private LocalDateTime lastLogin;
     private String token;
@@ -32,7 +31,6 @@ public class UserDto {
                 .birth(birth)
                 .name(name)
                 .gender(String.valueOf(gender.charAt(0))) // 문자열에서 첫 번째 문자를 Character로 변환
-                .address(address)
                 .lastLogin(lastLogin)
                 .token(token)
                 .build();
