@@ -38,10 +38,6 @@ public class User {
     @Column(name = "gender", nullable = false)
     private String gender;
 
-    @Column(name = "address", nullable = false)
-    @Convert(converter = ListOneStringConverter.class)
-    private List<String> address;
-
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
@@ -58,9 +54,6 @@ public class User {
         }
         if (userDto.getGender() != null) {
             this.gender = userDto.getGender(); // 문자열로 설정
-        }
-        if (userDto.getAddress() != null && !userDto.getAddress().isEmpty()) {
-            this.address = userDto.getAddress();
         }
     }
 
@@ -80,7 +73,6 @@ public class User {
                 .birth(birth)
                 .name(name)
                 .gender(gender)
-                .address(address)
                 .lastLogin(lastLogin)
                 .build();
     }
