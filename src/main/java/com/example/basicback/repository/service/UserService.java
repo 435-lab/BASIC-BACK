@@ -1,27 +1,21 @@
 package com.example.basicback.repository.service;
 
 import com.example.basicback.dto.UserDto;
-import com.example.basicback.model.DisasterMessage;
 import com.example.basicback.model.pk.Message;
 import com.example.basicback.model.pk.User;
 import com.example.basicback.enums.StatusEnum;
-import com.example.basicback.repository.DisasterMessageRepository;
 import com.example.basicback.repository.mapping.jpaUserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final jpaUserRepository jpaUserRepository;
-    private final DisasterMessageRepository repository;
 
     // 로그인
     public ResponseEntity<Message> login(UserDto userDto) {

@@ -30,4 +30,3 @@ public class DisasterApiResponse {
         private String msg;
     }
 }
-

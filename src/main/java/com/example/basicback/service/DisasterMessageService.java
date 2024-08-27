@@ -23,3 +23,4 @@ public class DisasterMessageService {
         return repository.findByLocationName(locationName);
     }
 }
+

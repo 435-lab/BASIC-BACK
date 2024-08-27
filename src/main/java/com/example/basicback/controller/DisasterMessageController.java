@@ -21,3 +21,4 @@ public class DisasterMessageController {
         return ResponseEntity.ok(messages);
     }
 }
+
