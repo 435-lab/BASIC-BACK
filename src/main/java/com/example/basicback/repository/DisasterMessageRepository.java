@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface DisasterMessageRepository extends JpaRepository<DisasterMessage, Long> {
     List<DisasterMessage> findByLocationName(String locationName);
+
     boolean existsByMd101Sn(String md101Sn);
 }
