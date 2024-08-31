@@ -1,10 +1,10 @@
-package com.example.basicback.repository.service;
+package com.example.basicback.user.repository.service;
 
-import com.example.basicback.dto.UserDto;
-import com.example.basicback.model.pk.Message;
-import com.example.basicback.model.pk.User;
-import com.example.basicback.enums.StatusEnum;
-import com.example.basicback.repository.mapping.jpaUserRepository;
+import com.example.basicback.user.dto.UserDTO;
+import com.example.basicback.user.entity.pk.Message;
+import com.example.basicback.user.entity.pk.User;
+import com.example.basicback.user.enums.StatusEnum;
+import com.example.basicback.user.repository.mapping.jpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,7 +18,7 @@ public class UserService {
     private final jpaUserRepository jpaUserRepository;
 
     // 로그인
-    public ResponseEntity<Message> login(UserDto userDto) {
+    public ResponseEntity<Message> login(UserDTO userDto) {
         Message message = new Message();
 
         User user = jpaUserRepository.findById(userDto.getId()).orElse(null);
@@ -74,7 +74,7 @@ public class UserService {
     }
 
     // 회원가입
-    public ResponseEntity<Message> register(UserDto userDto) {
+    public ResponseEntity<Message> register(UserDTO userDto) {
         Message message = new Message();
 
         User user = jpaUserRepository.findById(userDto.getId()).orElse(null);
@@ -107,7 +107,7 @@ public class UserService {
     }
 
     // 사용자 정보 변경
-    public ResponseEntity<Message> changeInfo(String id, UserDto userDto) {
+    public ResponseEntity<Message> changeInfo(String id, UserDTO userDto) {
         Message message = new Message();
         User user = jpaUserRepository.findById(id).orElse(null);
 

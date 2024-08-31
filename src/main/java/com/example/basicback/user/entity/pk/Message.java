@@ -1,6 +1,6 @@
-package com.example.basicback.model.pk;
+package com.example.basicback.user.entity.pk;
 
-import com.example.basicback.enums.StatusEnum;
+import com.example.basicback.user.enums.StatusEnum;
 import lombok.Data;
 
 import java.time.LocalDateTime;

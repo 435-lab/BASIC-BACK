@@ -65,4 +65,8 @@ out/
 hs_err_pid*
 replay_pid*
 
+######## SECRET KEY INFO
+src/main/resources/application-SECRET-KEY.properties
+
 # End of https://www.toptal.com/developers/gitignore/api/java
+

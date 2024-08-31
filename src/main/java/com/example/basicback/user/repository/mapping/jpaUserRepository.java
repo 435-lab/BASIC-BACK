@@ -1,6 +1,6 @@
-package com.example.basicback.repository.mapping;
+package com.example.basicback.user.repository.mapping;
 
-import com.example.basicback.model.pk.User;
+import com.example.basicback.user.entity.pk.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

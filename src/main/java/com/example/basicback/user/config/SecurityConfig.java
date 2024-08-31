@@ -1,4 +1,4 @@
-package com.example.basicback.config;
+package com.example.basicback.user.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

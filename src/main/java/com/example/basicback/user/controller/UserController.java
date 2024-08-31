@@ -1,8 +1,8 @@
-package com.example.basicback.controller;
+package com.example.basicback.user.controller;
 
-import com.example.basicback.dto.UserDto;
-import com.example.basicback.model.pk.Message;
-import com.example.basicback.repository.service.UserService;
+import com.example.basicback.user.dto.UserDTO;
+import com.example.basicback.user.entity.pk.Message;
+import com.example.basicback.user.repository.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Message> login(HttpServletRequest request, @RequestBody UserDto userDto) {
+    public ResponseEntity<Message> login(HttpServletRequest request, @RequestBody UserDTO userDto) {
         log.debug("Accessed IP : {}", request.getRemoteAddr());
         log.debug("id : {}", userDto.getId());
 
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Message> register(HttpServletRequest request, @RequestBody UserDto userDto) {
+    public ResponseEntity<Message> register(HttpServletRequest request, @RequestBody UserDTO userDto) {
         log.debug("Accessed IP : {}", request.getRemoteAddr());
         log.debug("id : {}, birth : {}, name : {}, gender : {}", userDto.getId(), userDto.getBirth(), userDto.getName(), userDto.getGender());
 
@@ -58,9 +58,9 @@ public class UserController {
     }
 
     @PutMapping("/change/{id}")
-    public ResponseEntity<Message> changeInfo(HttpServletRequest request, @PathVariable String id, @RequestBody UserDto userDto) {
+    public ResponseEntity<Message> changeInfo(HttpServletRequest request, @PathVariable String id, @RequestBody UserDTO userDto) {
         log.debug("Accessed IP : {}", request.getRemoteAddr());
-        log.debug("id : {}, name : {}, birth : {}, gender : {}", id, userDto.getName(), userDto.getBirth(), userDto.getGender());
+        log.debug("id : {}, name : {}, birth : {}, gender : {}, address : {}", id, userDto.getName(), userDto.getBirth(), userDto.getGender());
 
         ResponseEntity<Message> response = userService.changeInfo(id, userDto);
 
