@@ -1,4 +1,4 @@
-package com.example.basicback.enums;
+package com.example.basicback.user.enums;
 
 import lombok.Getter;
 

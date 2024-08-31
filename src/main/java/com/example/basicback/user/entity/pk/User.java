@@ -1,7 +1,7 @@
-package com.example.basicback.model.pk;
+package com.example.basicback.user.entity.pk;
 
-import com.example.basicback.dto.UserDto;
-import com.example.basicback.model.converter.ListOneStringConverter;
+import com.example.basicback.user.dto.UserDTO;
+import com.example.basicback.user.entity.converter.ListOneStringConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Table(name = "user")
 @Entity
@@ -45,7 +46,7 @@ public class User {
     private String token;
 
     // 회원 정보 변경을 위한 update 메서드 수정
-    public void update(UserDto userDto) {
+    public void update(UserDTO userDto) {
         if (userDto.getBirth() != null) {
             this.birth = userDto.getBirth();
         }
@@ -66,8 +67,8 @@ public class User {
         this.token = token;
     }
 
-    public UserDto toDto() {
-        return UserDto.builder()
+    public UserDTO toDto() {
+        return UserDTO.builder()
                 .id(id)
                 .password(password)
                 .birth(birth)

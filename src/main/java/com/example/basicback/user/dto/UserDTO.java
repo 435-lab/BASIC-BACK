@@ -1,6 +1,6 @@
-package com.example.basicback.dto;
+package com.example.basicback.user.dto;
 
-import com.example.basicback.model.pk.User;
+import com.example.basicback.user.entity.pk.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class UserDTO {
 
     private String id;
     private String password;

@@ -1,10 +1,11 @@
 package com.example.basicback.disasterfetcher;
 
-
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.springframework.stereotype.Service;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.HttpURLConnection;
@@ -18,12 +19,15 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+@Service
 public class DisasterFetcher {
 
     private static final Logger log = Logger.getLogger(DisasterFetcher.class.getName());
-    private String apiKey = "";  // Replace with your API key
-    private String apiUrl = "";  // Replace with your API URL
 
+    @Value("${apiKey}")
+    private String apiKey;
+    @Value("${apiUrl}")
+    private String apiUrl;
     public List<DisasterMessage> fetchDisasterMessages() {
         List<DisasterMessage> messages = new ArrayList<>();
         log.info("Starting fetchDisasterMessages scheduled task");
