@@ -8,7 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ReportResponse {
-    private int rankNo;
     private int reportId;
     private String title;
     private String content;

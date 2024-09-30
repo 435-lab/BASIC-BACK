@@ -4,58 +4,46 @@ import com.example.basicback.report.dto.request.ReportRequest;
 import com.example.basicback.report.dto.response.ReportResponse;
 import com.example.basicback.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/reports")
 @RequiredArgsConstructor
-@RequestMapping("/report")
 public class ReportController {
 
     private final ReportService reportService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String report(Model model) {
+    @GetMapping
+    public ResponseEntity<List<ReportResponse>> getAllReports() {
         List<ReportResponse> reportResponse = reportService.selectReportList();
-        System.out.println("report reportResponse ==> " + reportResponse);
-        model.addAttribute("reports", reportResponse);
-        return "report/report";
+        return ResponseEntity.ok(reportResponse);
     }
 
-    @RequestMapping(value = "/report-detail/{reportId}", method = RequestMethod.GET)
-    public String reportDetail(@PathVariable("reportId") int reportId, Model model) {
+    @GetMapping("/{reportId}")
+    public ResponseEntity<ReportResponse> getReportById(@PathVariable("reportId") int reportId) {
         ReportResponse reportResponse = reportService.selectOneReport(reportId);
-        System.out.println("reportDetail reportResponse ==> " + reportResponse);
-        model.addAttribute("report", reportResponse);
-        return "report/reportDetail";
+        return ResponseEntity.ok(reportResponse);
     }
 
-    @RequestMapping(value = "/detail", method = RequestMethod.POST)
-    @ResponseBody
-    public int updateDetail(@RequestBody ReportRequest reportRequest) {
-        System.out.println("updateDetail reportRequest ==> " + reportRequest);
-        return reportService.updateDetail(reportRequest);
+    @PutMapping("/{reportId}")
+    public ResponseEntity<Void> updateReport(@PathVariable("reportId") int reportId, @RequestBody ReportRequest reportRequest) {
+        reportRequest.setReportId(reportId); // Ensure reportId in request matches URL
+        reportService.updateDetail(reportRequest);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    @DeleteMapping("/delete/{reportId}")
-    @ResponseBody
-    public int deleteReport(@PathVariable("reportId") int reportId) {
-        System.out.println("deleteReport reportId ==> " + reportId);
-        return reportService.deleteReport(reportId);
+    @DeleteMapping("/{reportId}")
+    public ResponseEntity<Void> deleteReport(@PathVariable("reportId") int reportId) {
+        reportService.deleteReport(reportId);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    @RequestMapping(value = "/insert-view", method = RequestMethod.GET)
-    public String reportInsertView() {
-        return "report/reportInsert";
-    }
-
-    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    @ResponseBody
-    public int insertReport(@RequestBody ReportRequest reportRequest) {
-        System.out.println("insertReport reportRequest ==> " + reportRequest);
-        return reportService.insertReport(reportRequest);
+    @PostMapping
+    public ResponseEntity<Void> createReport(@RequestBody ReportRequest reportRequest) {
+        reportService.insertReport(reportRequest);
+        return ResponseEntity.status(201).build(); // 201 Created
     }
 }
