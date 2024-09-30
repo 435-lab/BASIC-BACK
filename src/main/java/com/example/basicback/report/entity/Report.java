@@ -18,7 +18,6 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer reportId;
-
     private String title;
     private String content;
     private String createId;
