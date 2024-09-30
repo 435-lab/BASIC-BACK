@@ -68,5 +68,6 @@ replay_pid*
 ######## SECRET KEY INFO
 application-SECRET-KEY.properties
 
-# End of https://www.toptal.com/developers/gitignore/api/java
+config.ini
+
 
