@@ -103,12 +103,7 @@ def main():
     try:
         # 데이터베이스 연결 정보를 직접 입력합니다.
         connection = mysql.connector.connect(
-            host='210.119.32.80',  # 데이터베이스 호스트
-            port=413,         # 포트 번호
-            user='dohwan',       # 사용자 이름
-            password='1234',  # 비밀번호
-            database='BASIC',  # 데이터베이스 이름
-            charset='utf8mb4'
+           
         )
 
         create_table(connection)
