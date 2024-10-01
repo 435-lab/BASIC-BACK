@@ -90,3 +90,7 @@ exit /b %EXIT_CODE%
 if "%OS%"=="Windows_NT" endlocal
 
 :omega
+
+@echo off
+python crawling.py
+pause
