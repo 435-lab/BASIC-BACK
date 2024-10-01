@@ -70,5 +70,8 @@ application-SECRET-KEY.properties
 
 config.ini
 
+<<<<<<< HEAD
 # End of https://www.toptal.com/developers/gitignore/api/java
+=======
+>>>>>>> BP-90-GPT-API-
 
