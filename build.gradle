@@ -38,9 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.json:json:20210307'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-<<<<<<< HEAD
     implementation 'org.python:jython-standalone:2.7.2'
-=======
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -52,7 +50,6 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
->>>>>>> BP-90-GPT-API-
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
     compileOnly 'org.projectlombok:lombok'
