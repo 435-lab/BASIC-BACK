@@ -4,6 +4,7 @@ import com.example.basicback.user.dto.UserDTO;
 import com.example.basicback.user.entity.pk.Message;
 import com.example.basicback.user.entity.pk.User;
 import com.example.basicback.user.enums.StatusEnum;
+import com.example.basicback.user.jwt.JwtUtil;
 import com.example.basicback.user.repository.mapping.jpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,43 +12,36 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final jpaUserRepository jpaUserRepository;
+    private final JwtUtil jwtUtil;
 
-    // 로그인
+    public UserService(BCryptPasswordEncoder passwordEncoder, jpaUserRepository jpaUserRepository, JwtUtil jwtUtil) {
+        this.passwordEncoder = passwordEncoder;
+        this.jpaUserRepository = jpaUserRepository;
+        this.jwtUtil = jwtUtil;
+    }
+
     public ResponseEntity<Message> login(UserDTO userDto) {
         Message message = new Message();
-
         User user = jpaUserRepository.findById(userDto.getId()).orElse(null);
 
-        // 로그인 성공
         if (user != null && passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
             user.updateLastLogin();
-
-            if (userDto.getToken() != null && !userDto.getToken().equals(user.getToken())) {
-                user.updateToken(userDto.getToken());
-            }
-
             jpaUserRepository.save(user);
+
+            UserDTO loggedInUserDto = user.toDto(); // User 엔티티를 UserDTO로 변환
 
             message.setStatus(StatusEnum.OK.getStatusCode());
             message.setResult(true);
             message.setMessage("Success");
-            message.setData(user);
-        } else if (user == null) {
-            // 사용자 존재 X
-            message.setStatus(StatusEnum.UNAUTHORIZED.getStatusCode());
-            message.setResult(false);
-            message.setMessage("No User");
-            message.setData(null);
+            message.setData(loggedInUserDto);
         } else {
-            // ID or Password 불일치
             message.setStatus(StatusEnum.UNAUTHORIZED.getStatusCode());
             message.setResult(false);
-            message.setMessage("ID or password does not match");
+            message.setMessage("Invalid credentials");
             message.setData(null);
         }
 
@@ -153,4 +147,3 @@ public class UserService {
         return ResponseEntity.ok(message);
     }
 }
-

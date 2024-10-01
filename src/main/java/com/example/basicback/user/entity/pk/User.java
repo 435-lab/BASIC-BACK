@@ -1,7 +1,7 @@
+
 package com.example.basicback.user.entity.pk;
 
 import com.example.basicback.user.dto.UserDTO;
-import com.example.basicback.user.entity.converter.ListOneStringConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,8 +9,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Table(name = "user")
 @Entity
@@ -69,12 +67,11 @@ public class User {
 
     public UserDTO toDto() {
         return UserDTO.builder()
-                .id(id)
-                .password(password)
-                .birth(birth)
-                .name(name)
-                .gender(gender)
-                .lastLogin(lastLogin)
+                .id(this.id)
+                .birth(this.birth)
+                .name(this.name)
+                .gender(this.gender)
+                .lastLogin(this.lastLogin)
                 .build();
     }
 

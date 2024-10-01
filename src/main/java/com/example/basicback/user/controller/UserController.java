@@ -2,6 +2,7 @@ package com.example.basicback.user.controller;
 
 import com.example.basicback.user.dto.UserDTO;
 import com.example.basicback.user.entity.pk.Message;
+import com.example.basicback.user.jwt.JwtUtil;
 import com.example.basicback.user.repository.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
@@ -28,8 +31,14 @@ public class UserController {
 
         ResponseEntity<Message> response = userService.login(userDto);
 
-        log.debug("Data : {}", response.getBody());
+        if (response.getBody().isResult()) {
+            UserDTO loggedInUser = (UserDTO) response.getBody().getData();
+            // JWT 토큰 생성 및 설정 로직 추가 (JwtUtil 사용)
+            String token = jwtUtil.generateToken(loggedInUser.getId());
+            loggedInUser.setToken(token);
+        }
 
+        log.debug("Data : {}", response.getBody());
         return response;
     }
 
