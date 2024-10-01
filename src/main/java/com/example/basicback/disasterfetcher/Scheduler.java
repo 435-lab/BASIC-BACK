@@ -22,7 +22,7 @@ public class Scheduler {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Scheduled(fixedRate = 600000) // 10분마다 실행 (600000ms = 10분)
+    @Scheduled(fixedRate = 6000000) // 10분마다 실행 (600000ms = 10분)
     public void fetchAndSaveDisasterMessages() {
         log.info("Starting scheduled task to fetch and save disaster messages");
         List<DisasterMessage> messages = disasterFetcher.fetchDisasterMessages();
@@ -37,7 +37,7 @@ public class Scheduler {
     }
 
     private void saveToDatabase(DisasterMessage message) {
-        String sql = "INSERT INTO disaster_messages (location_name, message, md101_sn, create_date) " +
+        String sql = "INSERT INTO disaster_message (location_name, message, md101_sn, create_date) " +
                 "VALUES (?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "location_name = VALUES(location_name), " +
@@ -55,7 +55,7 @@ public class Scheduler {
 
     public List<DisasterMessage> getDisasterMessagesForLocation(double lat, double lng) {
         return jdbcTemplate.query(
-                "SELECT * FROM disaster_messages",
+                "SELECT * FROM disaster_message",
                 (rs, rowNum) -> {
                     DisasterMessage message = new DisasterMessage();
                     message.setLocationName(rs.getString("location_name"));

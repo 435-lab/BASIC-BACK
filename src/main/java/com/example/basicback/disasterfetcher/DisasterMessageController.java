@@ -18,9 +18,9 @@ public class DisasterMessageController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @GetMapping("/disaster-messages")
+    @GetMapping("/disaster-message")
     public ResponseEntity<List<DisasterMessage>> getDisasterMessages(@RequestParam String region) {
-        String sql = "SELECT * FROM disaster_messages WHERE location_name LIKE ?";
+        String sql = "SELECT * FROM disaster_message WHERE location_name LIKE ?";
         List<DisasterMessage> messages = jdbcTemplate.query(sql, new Object[]{"%" + region + "%"},
                 (rs, rowNum) -> {
                     DisasterMessage message = new DisasterMessage();
