@@ -22,7 +22,7 @@ public class Scheduler {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Scheduled(fixedRate = 6000000) // 10분마다 실행 (600000ms = 10분)
+    @Scheduled(fixedRate = 600000) // 10분마다 실행 (600000ms = 10분)
     public void fetchAndSaveDisasterMessages() {
         log.info("Starting scheduled task to fetch and save disaster messages");
         List<DisasterMessage> messages = disasterFetcher.fetchDisasterMessages();
@@ -37,31 +37,44 @@ public class Scheduler {
     }
 
     private void saveToDatabase(DisasterMessage message) {
-        String sql = "INSERT INTO disaster_message (location_name, message, md101_sn, create_date) " +
-                "VALUES (?, ?, ?, ?) " +
+        String sql = "INSERT INTO disaster_message (sn, crt_dt, msg_cn, rcptn_rgn_nm, emrg_step_nm, dst_se_nm, reg_ymd, mdfcn_ymd) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "location_name = VALUES(location_name), " +
-                "message = VALUES(message), " +
-                "create_date = VALUES(create_date)";
+                "crt_dt = VALUES(crt_dt), " +
+                "msg_cn = VALUES(msg_cn), " +
+                "rcptn_rgn_nm = VALUES(rcptn_rgn_nm), " +
+                "emrg_step_nm = VALUES(emrg_step_nm), " +
+                "dst_se_nm = VALUES(dst_se_nm), " +
+                "reg_ymd = VALUES(reg_ymd), " +
+                "mdfcn_ymd = VALUES(mdfcn_ymd)";
 
         jdbcTemplate.update(sql,
-                message.getLocationName(),
-                message.getMessage(),
-                message.getMd101Sn(),
-                message.getCreateDate());
+                message.getSn(),
+                message.getCrtDt(),
+                message.getMsgCn(),
+                message.getRcptnRgnNm(),
+                message.getEmrgStepNm(),
+                message.getDstSeNm(),
+                message.getRegYmd(),
+                message.getMdfcnYmd());
 
-        log.info("Saved/Updated disaster message with MD101 SN: " + message.getMd101Sn());
+        log.info("Saved/Updated disaster message with SN: " + message.getSn());
     }
 
-    public List<DisasterMessage> getDisasterMessagesForLocation(double lat, double lng) {
+    public List<DisasterMessage> getDisasterMessagesForLocation(String region) {
         return jdbcTemplate.query(
-                "SELECT * FROM disaster_message",
+                "SELECT * FROM disaster_message WHERE rcptn_rgn_nm LIKE ?",
+                new Object[]{"%" + region + "%"},
                 (rs, rowNum) -> {
                     DisasterMessage message = new DisasterMessage();
-                    message.setLocationName(rs.getString("location_name"));
-                    message.setMessage(rs.getString("message"));
-                    message.setMd101Sn(rs.getString("md101_sn"));
-                    message.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+                    message.setSn(rs.getString("sn"));
+                    message.setCrtDt(rs.getTimestamp("crt_dt").toLocalDateTime());
+                    message.setMsgCn(rs.getString("msg_cn"));
+                    message.setRcptnRgnNm(rs.getString("rcptn_rgn_nm"));
+                    message.setEmrgStepNm(rs.getString("emrg_step_nm"));
+                    message.setDstSeNm(rs.getString("dst_se_nm"));
+                    message.setRegYmd(rs.getTimestamp("reg_ymd").toLocalDateTime());
+                    message.setMdfcnYmd(rs.getTimestamp("mdfcn_ymd").toLocalDateTime());
                     return message;
                 }
         );

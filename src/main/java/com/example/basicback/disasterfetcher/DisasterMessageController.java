@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -20,14 +19,18 @@ public class DisasterMessageController {
 
     @GetMapping("/disaster-message")
     public ResponseEntity<List<DisasterMessage>> getDisasterMessages(@RequestParam String region) {
-        String sql = "SELECT * FROM disaster_message WHERE location_name LIKE ?";
+        String sql = "SELECT * FROM disaster_message WHERE rcptn_rgn_nm LIKE ?";
         List<DisasterMessage> messages = jdbcTemplate.query(sql, new Object[]{"%" + region + "%"},
                 (rs, rowNum) -> {
                     DisasterMessage message = new DisasterMessage();
-                    message.setLocationName(rs.getString("location_name"));
-                    message.setMessage(rs.getString("message"));
-                    message.setMd101Sn(rs.getString("md101_sn"));
-                    message.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+                    message.setSn(rs.getString("sn"));
+                    message.setCrtDt(rs.getTimestamp("crt_dt").toLocalDateTime());
+                    message.setMsgCn(rs.getString("msg_cn"));
+                    message.setRcptnRgnNm(rs.getString("rcptn_rgn_nm"));
+                    message.setEmrgStepNm(rs.getString("emrg_step_nm"));
+                    message.setDstSeNm(rs.getString("dst_se_nm"));
+                    message.setRegYmd(rs.getTimestamp("reg_ymd").toLocalDateTime());
+                    message.setMdfcnYmd(rs.getTimestamp("mdfcn_ymd").toLocalDateTime());
                     return message;
                 }
         );
