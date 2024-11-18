@@ -1,44 +1,104 @@
 package com.example.basicback.disasterfetcher;
 
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "disaster_message")
 public class DisasterMessage {
-    private String locationName;
-    private String message;
-    private String md101Sn;
-    private LocalDateTime createDate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "sn")
+    private String sn;
+
+    @Column(name = "crt_dt")
+    private LocalDateTime crtDt;
+
+    @Column(name = "msg_cn", length = 4000)
+    private String msgCn;
+
+    @Column(name = "rcptn_rgn_nm", length = 4000)
+    private String rcptnRgnNm;
+
+    @Column(name = "emrg_step_nm", length = 100)
+    private String emrgStepNm;
+
+    @Column(name = "dst_se_nm", length = 100)
+    private String dstSeNm;
+
+    @Column(name = "reg_ymd")
+    private LocalDateTime regYmd;
+
+    @Column(name = "mdfcn_ymd")
+    private LocalDateTime mdfcnYmd;
+
 
     // Getters and Setters
-    public String getLocationName() {
-        return locationName;
+    public String getSn() {
+        return sn;
     }
 
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
+    public void setSn(String sn) {
+        this.sn = sn;
     }
 
-    public String getMessage() {
-        return message;
+    public LocalDateTime getCrtDt() {
+        return crtDt;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setCrtDt(LocalDateTime crtDt) {
+        this.crtDt = crtDt;
     }
 
-    public String getMd101Sn() {
-        return md101Sn;
+    public String getMsgCn() {
+        return msgCn;
     }
 
-    public void setMd101Sn(String md101Sn) {
-        this.md101Sn = md101Sn;
+    public void setMsgCn(String msgCn) {
+        this.msgCn = msgCn;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    public String getRcptnRgnNm() {
+        return rcptnRgnNm;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
+    public void setRcptnRgnNm(String rcptnRgnNm) {
+        this.rcptnRgnNm = rcptnRgnNm;
+    }
+
+    public String getEmrgStepNm() {
+        return emrgStepNm;
+    }
+
+    public void setEmrgStepNm(String emrgStepNm) {
+        this.emrgStepNm = emrgStepNm;
+    }
+
+    public String getDstSeNm() {
+        return dstSeNm;
+    }
+
+    public void setDstSeNm(String dstSeNm) {
+        this.dstSeNm = dstSeNm;
+    }
+
+    public LocalDateTime getRegYmd() {
+        return regYmd;
+    }
+
+    public void setRegYmd(LocalDateTime regYmd) {
+        this.regYmd = regYmd;
+    }
+
+    public LocalDateTime getMdfcnYmd() {
+        return mdfcnYmd;
+    }
+
+    public void setMdfcnYmd(LocalDateTime mdfcnYmd) {
+        this.mdfcnYmd = mdfcnYmd;
     }
 }
