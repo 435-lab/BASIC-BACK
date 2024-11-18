@@ -1,56 +1,91 @@
 package com.example.basicback.disasterfetcher;
 
-
 import java.util.List;
 
 public class DisasterApiResponse {
-    private List<Row> row;
+    private List<Item> items;
 
-    public List<Row> getRow() {
-        return row;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setRow(List<Row> row) {
-        this.row = row;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
-    public static class Row {
-        private String locationName;
-        private String msg;
-        private String md101Sn;
-        private String createDate;
+    public static class Item {
+        private String sn;
+        private String crtDt;
+        private String msgCn;
+        private String rcptnRgnNm;
+        private String emrgStepNm;
+        private String dstSeNm;
+        private String regYmd;
+        private String mdfcnYmd;
 
         // Getters and Setters
-        public String getLocationName() {
-            return locationName;
+        public String getSn() {
+            return sn;
         }
 
-        public void setLocationName(String locationName) {
-            this.locationName = locationName;
+        public void setSn(String sn) {
+            this.sn = sn;
         }
 
-        public String getMsg() {
-            return msg;
+        public String getCrtDt() {
+            return crtDt;
         }
 
-        public void setMsg(String msg) {
-            this.msg = msg;
+        public void setCrtDt(String crtDt) {
+            this.crtDt = crtDt;
         }
 
-        public String getMd101Sn() {
-            return md101Sn;
+        public String getMsgCn() {
+            return msgCn;
         }
 
-        public void setMd101Sn(String md101Sn) {
-            this.md101Sn = md101Sn;
+        public void setMsgCn(String msgCn) {
+            this.msgCn = msgCn;
         }
 
-        public String getCreateDate() {
-            return createDate;
+        public String getRcptnRgnNm() {
+            return rcptnRgnNm;
         }
 
-        public void setCreateDate(String createDate) {
-            this.createDate = createDate;
+        public void setRcptnRgnNm(String rcptnRgnNm) {
+            this.rcptnRgnNm = rcptnRgnNm;
+        }
+
+        public String getEmrgStepNm() {
+            return emrgStepNm;
+        }
+
+        public void setEmrgStepNm(String emrgStepNm) {
+            this.emrgStepNm = emrgStepNm;
+        }
+
+        public String getDstSeNm() {
+            return dstSeNm;
+        }
+
+        public void setDstSeNm(String dstSeNm) {
+            this.dstSeNm = dstSeNm;
+        }
+
+        public String getRegYmd() {
+            return regYmd;
+        }
+
+        public void setRegYmd(String regYmd) {
+            this.regYmd = regYmd;
+        }
+
+        public String getMdfcnYmd() {
+            return mdfcnYmd;
+        }
+
+        public void setMdfcnYmd(String mdfcnYmd) {
+            this.mdfcnYmd = mdfcnYmd;
         }
     }
 }

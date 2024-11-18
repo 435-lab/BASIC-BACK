@@ -1,45 +1,61 @@
 package com.example.basicback.disasterfetcher;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import org.springframework.stereotype.Service;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 @Service
 public class DisasterFetcher {
 
     private static final Logger log = Logger.getLogger(DisasterFetcher.class.getName());
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
     @Value("${apiKey}")
-    private String apiKey;
+    private String serviceKey;
     @Value("${apiUrl}")
     private String apiUrl;
+
     public List<DisasterMessage> fetchDisasterMessages() {
         List<DisasterMessage> messages = new ArrayList<>();
         log.info("Starting fetchDisasterMessages scheduled task");
         try {
-            String encodedServiceKey = URLEncoder.encode(apiKey, StandardCharsets.UTF_8.toString());
-            log.info("Encoded service key: " + encodedServiceKey);
+            String encodedServiceKey = URLEncoder.encode(serviceKey, StandardCharsets.UTF_8.toString());
+            String pageNo = "1";
+            String numOfRows = "10";
+            String returnType = "xml";
+            String startDate = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-            String url = apiUrl + "?serviceKey=" + encodedServiceKey + "&type=xml&pageNo=1&numOfRows=10&flag=Y";
-            log.info("API Request URL: " + url);
+            StringBuilder urlBuilder = new StringBuilder(apiUrl);
+            urlBuilder.append("?serviceKey=").append(encodedServiceKey);
+            urlBuilder.append("&pageNo=").append(pageNo);
+            urlBuilder.append("&numOfRows=").append(numOfRows);
+            urlBuilder.append("&returnType=").append(returnType);
+            urlBuilder.append("&crtDt=").append(startDate);
 
-            URL apiEndpoint = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) apiEndpoint.openConnection();
+            log.info("API Request URL: " + urlBuilder.toString());
+
+            URI uri = new URI(urlBuilder.toString());
+            URL url = uri.toURL();
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/xml");
 
@@ -48,35 +64,53 @@ public class DisasterFetcher {
             log.info("API Response Status: " + responseCode);
 
             if (responseCode == 200) {
-                Scanner scanner = new Scanner(apiEndpoint.openStream());
-                String response = scanner.useDelimiter("\\A").next();
-                scanner.close();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
 
-                log.info("Response: " + response);
+                log.info("Response: " + response.toString());
 
-                // XML 파싱을 수행합니다.
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder = factory.newDocumentBuilder();
-                Document doc = builder.parse(new java.io.ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8)));
+                Document doc = builder.parse(new java.io.ByteArrayInputStream(response.toString().getBytes(StandardCharsets.UTF_8)));
 
-                NodeList rowNodes = doc.getElementsByTagName("row");
+                NodeList itemNodes = doc.getElementsByTagName("item");
 
-                for (int i = 0; i < rowNodes.getLength(); i++) {
-                    Element rowElement = (Element) rowNodes.item(i);
-
-                    String createDateStr = rowElement.getElementsByTagName("create_date").item(0).getTextContent();
-                    String locationName = rowElement.getElementsByTagName("location_name").item(0).getTextContent();
-                    String md101Sn = rowElement.getElementsByTagName("md101_sn").item(0).getTextContent();
-                    String msg = rowElement.getElementsByTagName("msg").item(0).getTextContent();
+                for (int i = 0; i < itemNodes.getLength(); i++) {
+                    Element itemElement = (Element) itemNodes.item(i);
 
                     DisasterMessage message = new DisasterMessage();
-                    message.setLocationName(locationName);
-                    message.setMessage(msg);
-                    message.setMd101Sn(md101Sn);
-                    message.setCreateDate(LocalDateTime.parse(createDateStr, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+                    message.setSn(getElementContent(itemElement, "SN"));
 
-                    log.info("Parsed disaster message: locationName=" + message.getLocationName()
-                            + ", md101Sn=" + message.getMd101Sn() + ", createDate=" + message.getCreateDate());
+                    try {
+                        message.setCrtDt(LocalDateTime.parse(getElementContent(itemElement, "CRT_DT"), DATE_FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        log.warning("Failed to parse CRT_DT: " + getElementContent(itemElement, "CRT_DT"));
+                        message.setCrtDt(null); // 또는 기본값 설정
+                    }
+
+                    message.setMsgCn(getElementContent(itemElement, "MSG_CN"));
+                    message.setRcptnRgnNm(getElementContent(itemElement, "RCPTN_RGN_NM"));
+                    message.setEmrgStepNm(getElementContent(itemElement, "EMRG_STEP_NM"));
+                    message.setDstSeNm(getElementContent(itemElement, "DST_SE_NM"));
+
+                    try {
+                        message.setRegYmd(LocalDateTime.parse(getElementContent(itemElement, "REG_YMD"), DATE_FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        log.warning("Failed to parse REG_YMD: " + getElementContent(itemElement, "REG_YMD"));
+                        message.setRegYmd(null); // 또는 기본값 설정
+                    }
+
+                    try {
+                        message.setMdfcnYmd(LocalDateTime.parse(getElementContent(itemElement, "MDFCN_YMD"), DATE_FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        log.warning("Failed to parse MDFCN_YMD: " + getElementContent(itemElement, "MDFCN_YMD"));
+                        message.setMdfcnYmd(null); // 또는 기본값 설정
+                    }
 
                     messages.add(message);
                 }
@@ -89,5 +123,13 @@ public class DisasterFetcher {
         }
         log.info("Completed fetchDisasterMessages scheduled task");
         return messages;
+    }
+
+    private String getElementContent(Element element, String tagName) {
+        NodeList nodeList = element.getElementsByTagName(tagName);
+        if (nodeList != null && nodeList.getLength() > 0) {
+            return nodeList.item(0).getTextContent();
+        }
+        return "";
     }
 }
