@@ -12,7 +12,7 @@ public class ChatGptService {
 
     private final WebClient webClient;
 
-    @Value("${chatgpt-apikey}")
+    @Value("${chatgpt.apikey}")
     private String apiKey;
 
     public ChatGptService(WebClient.Builder webClientBuilder) {
@@ -20,7 +20,7 @@ public class ChatGptService {
     }
 
     public Mono<String> summarizeContent(String content) {
-        String prompt = "다음내용을 요약해주세요. 비슷한 내용은 한문장으로 요약하고 다른내용이다 싶으면 다른 문장으로 써주세요. 각 내용마다 다른 문장으로 쓰고 앞에 번호를 붙혀주세요." + content;
+        String prompt = "당신은 재난 제보게시판에 올라온 게시글을 요약하여 짧게 만드는 역할이야. 그리고 문장은 5개 생성하고 각 문장뒤에 줄바꿈 해줘" + content;
 
         return webClient.post()
                 .header("Authorization", "Bearer " + apiKey)
@@ -36,7 +36,7 @@ public class ChatGptService {
 
     private Map<String, Object> buildRequestBody(String prompt) {
         return Map.of(
-                "model", "gpt-4",
+                "model", "gpt-3.5-turbo",
                 "messages", new Object[]{
                         Map.of("role", "user", "content", prompt)
                 }
