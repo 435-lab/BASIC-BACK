@@ -12,22 +12,22 @@ public class DisasterMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sn")
+    @Column(name = "문자ID")
     private String sn;
 
-    @Column(name = "crt_dt")
+    @Column(name = "발송_시간")
     private LocalDateTime crtDt;
 
-    @Column(name = "msg_cn", length = 4000)
+    @Column(name = "메시지_내용", length = 4000)
     private String msgCn;
 
-    @Column(name = "rcptn_rgn_nm", length = 4000)
+    @Column(name = "발송_지역", length = 4000)
     private String rcptnRgnNm;
 
-    @Column(name = "emrg_step_nm", length = 100)
+    @Column(name = "문자_유형", length = 100)
     private String emrgStepNm;
 
-    @Column(name = "dst_se_nm", length = 100)
+    @Column(name = "재난_유형", length = 100)
     private String dstSeNm;
 
     @Column(name = "reg_ymd")

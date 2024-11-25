@@ -37,14 +37,14 @@ public class Scheduler {
     }
 
     private void saveToDatabase(DisasterMessage message) {
-        String sql = "INSERT INTO disaster_message (sn, crt_dt, msg_cn, rcptn_rgn_nm, emrg_step_nm, dst_se_nm, reg_ymd, mdfcn_ymd) " +
+        String sql = "INSERT INTO disaster_message (문자ID, 발송_시간, 메시지_내용, 발송_지역, 문자_유형, 재난_유형, reg_ymd, mdfcn_ymd) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "crt_dt = VALUES(crt_dt), " +
-                "msg_cn = VALUES(msg_cn), " +
-                "rcptn_rgn_nm = VALUES(rcptn_rgn_nm), " +
-                "emrg_step_nm = VALUES(emrg_step_nm), " +
-                "dst_se_nm = VALUES(dst_se_nm), " +
+                "발송_시간 = VALUES(발송_시간), " +
+                "메시지_내용 = VALUES(메시지_내용), " +
+                "발송_지역 = VALUES(발송_지역), " +
+                "문자_유형 = VALUES(문자_유형), " +
+                "재난_유형 = VALUES(재난_유형 ), " +
                 "reg_ymd = VALUES(reg_ymd), " +
                 "mdfcn_ymd = VALUES(mdfcn_ymd)";
 
