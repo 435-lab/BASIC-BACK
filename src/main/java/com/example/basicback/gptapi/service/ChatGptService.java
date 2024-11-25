@@ -12,7 +12,7 @@ public class ChatGptService {
 
     private final WebClient webClient;
 
-    @Value("${chatgpt.apikey}")
+    @Value("${chatgpt-apikey}")
     private String apiKey;
 
     public ChatGptService(WebClient.Builder webClientBuilder) {
