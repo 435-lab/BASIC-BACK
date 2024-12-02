@@ -1,8 +1,6 @@
 package com.example.basicback.disasterfetcher;
 
-
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,7 +33,6 @@ public class DisasterMessage {
 
     @Column(name = "mdfcn_ymd")
     private LocalDateTime mdfcnYmd;
-
 
     // Getters and Setters
     public String getSn() {
@@ -100,5 +97,21 @@ public class DisasterMessage {
 
     public void setMdfcnYmd(LocalDateTime mdfcnYmd) {
         this.mdfcnYmd = mdfcnYmd;
+    }
+
+    // toString 메서드 추가 (디버깅 용도)
+    @Override
+    public String toString() {
+        return "DisasterMessage{" +
+                "id=" + id +
+                ", sn='" + sn + '\'' +
+                ", crtDt=" + crtDt +
+                ", msgCn='" + msgCn + '\'' +
+                ", rcptnRgnNm='" + rcptnRgnNm + '\'' +
+                ", emrgStepNm='" + emrgStepNm + '\'' +
+                ", dstSeNm='" + dstSeNm + '\'' +
+                ", regYmd=" + regYmd +
+                ", mdfcnYmd=" + mdfcnYmd +
+                '}';
     }
 }
