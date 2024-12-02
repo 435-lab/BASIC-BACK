@@ -1,4 +1,4 @@
-package com.example.basicback.disasterfetcher;
+package com.example.basicback.missingfetcher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,35 +10,35 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Component
-public class Scheduler {
+public class MissingScheduler {
 
-    private static final Logger log = Logger.getLogger(Scheduler.class.getName());
+    private static final Logger log = Logger.getLogger(MissingScheduler.class.getName());
 
-    private final DisasterFetcher disasterFetcher;
+    private final MissingFetcher missingFetcher;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public Scheduler(DisasterFetcher disasterFetcher, JdbcTemplate jdbcTemplate) {
-        this.disasterFetcher = disasterFetcher;
+    public MissingScheduler(MissingFetcher missingFetcher, JdbcTemplate jdbcTemplate) {
+        this.missingFetcher = missingFetcher;
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Scheduled(fixedRate = 600000) // 10분마다 실행 (600000ms = 10분)
-    public void fetchAndSaveDisasterMessages() {
+    public void fetchAndSaveMissingMessages() {
         log.info("Starting scheduled task to fetch and save disaster messages");
-        List<DisasterMessage> messages = disasterFetcher.fetchDisasterMessages();
+        List<MissingMessage> messages = missingFetcher.fetchMissingMessages();
 
         log.info("Fetched " + messages.size() + " disaster messages");
 
-        for (DisasterMessage message : messages) {
-            saveToDatabase(message);
+        for (MissingMessage missingmessage : messages) {
+            saveToDatabase(missingmessage);
         }
 
         log.info("Finished saving disaster messages to database");
     }
 
-    private void saveToDatabase(DisasterMessage message) {
-        String sql = "INSERT INTO disaster_message (`문자ID`, `발송_시간`, `메시지_내용`, `발송_지역`, `문자_유형`, `재난_유형`, reg_ymd, mdfcn_ymd) " +
+    private void saveToDatabase(MissingMessage message) {
+        String sql = "INSERT INTO missing_message (`문자ID`, `발송_시간`, `메시지_내용`, `발송_지역`, `문자_유형`, `재난_유형`, reg_ymd, mdfcn_ymd) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "`발송_시간` = VALUES(`발송_시간`), " +
@@ -62,12 +62,12 @@ public class Scheduler {
         log.info("Saved/Updated disaster message with SN: " + message.getSn());
     }
 
-    public List<DisasterMessage> getDisasterMessagesForLocation(String region) {
-        String sql = "SELECT * FROM disaster_message  WHERE `발송_지역` LIKE ? AND `재난_유형` != '기타' ORDER BY `발송_시간` DESC LIMIT 10";
+    public List<MissingMessage> getMissingMessagesForLocation(String region) {
+        String sql = "SELECT * FROM missing_message  WHERE `발송_지역` LIKE ? AND `재난_유형` = '기타' ORDER BY `발송_시간` DESC LIMIT 10";
         return jdbcTemplate.query(sql,
                 new Object[]{"%" + region + "%"},
                 (rs, rowNum) -> {
-                    DisasterMessage message = new DisasterMessage();
+                    MissingMessage message = new MissingMessage();
                     message.setSn(rs.getString("문자ID"));
 
                     // 발송 시간에 대한 null 체크 추가

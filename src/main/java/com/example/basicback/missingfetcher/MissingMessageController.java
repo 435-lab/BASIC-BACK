@@ -1,5 +1,6 @@
-package com.example.basicback.disasterfetcher;
+package com.example.basicback.missingfetcher;
 
+import com.example.basicback.disasterfetcher.GeocodingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,21 +12,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class DisasterMessageController {
+public class MissingMessageController {
 
     @Autowired
-    private Scheduler scheduler;
+    private MissingScheduler missingscheduler;
 
     @Autowired
     private GeocodingService geocodingService;
 
-    @GetMapping("/disaster-message")
-    public ResponseEntity<List<DisasterMessage>> getDisasterMessages(
+    @GetMapping("/missing-message")
+    public ResponseEntity<List<MissingMessage>> getDisasterMessages(
             @RequestParam double latitude,
             @RequestParam double longitude) {
 
         String region = geocodingService.getRegionFromCoordinates(latitude, longitude);
-        List<DisasterMessage> messages = scheduler.getDisasterMessagesForLocation(region);
+        List<MissingMessage> messages = missingscheduler.getMissingMessagesForLocation(region);
 
         return ResponseEntity.ok(messages);
     }
