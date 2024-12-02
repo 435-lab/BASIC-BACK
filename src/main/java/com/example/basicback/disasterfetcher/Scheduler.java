@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -37,14 +38,14 @@ public class Scheduler {
     }
 
     private void saveToDatabase(DisasterMessage message) {
-        String sql = "INSERT INTO disaster_message (문자ID, 발송_시간, 메시지_내용, 발송_지역, 문자_유형, 재난_유형, reg_ymd, mdfcn_ymd) " +
+        String sql = "INSERT INTO disaster_message (`문자ID`, `발송_시간`, `메시지_내용`, `발송_지역`, `문자_유형`, `재난_유형`, reg_ymd, mdfcn_ymd) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "발송_시간 = VALUES(발송_시간), " +
-                "메시지_내용 = VALUES(메시지_내용), " +
-                "발송_지역 = VALUES(발송_지역), " +
-                "문자_유형 = VALUES(문자_유형), " +
-                "재난_유형 = VALUES(재난_유형 ), " +
+                "`발송_시간` = VALUES(`발송_시간`), " +
+                "`메시지_내용` = VALUES(`메시지_내용`), " +
+                "`발송_지역` = VALUES(`발송_지역`), " +
+                "`문자_유형` = VALUES(`문자_유형`), " +
+                "`재난_유형` = VALUES(`재난_유형`), " +
                 "reg_ymd = VALUES(reg_ymd), " +
                 "mdfcn_ymd = VALUES(mdfcn_ymd)";
 
@@ -62,19 +63,29 @@ public class Scheduler {
     }
 
     public List<DisasterMessage> getDisasterMessagesForLocation(String region) {
-        return jdbcTemplate.query(
-                "SELECT * FROM disaster_message WHERE rcptn_rgn_nm LIKE ?",
+        String sql = "SELECT * FROM disaster_message  WHERE `발송_지역` LIKE ? AND `재난_유형` != '기타' ORDER BY `발송_시간` DESC LIMIT 10";
+        return jdbcTemplate.query(sql,
                 new Object[]{"%" + region + "%"},
                 (rs, rowNum) -> {
                     DisasterMessage message = new DisasterMessage();
-                    message.setSn(rs.getString("sn"));
-                    message.setCrtDt(rs.getTimestamp("crt_dt").toLocalDateTime());
-                    message.setMsgCn(rs.getString("msg_cn"));
-                    message.setRcptnRgnNm(rs.getString("rcptn_rgn_nm"));
-                    message.setEmrgStepNm(rs.getString("emrg_step_nm"));
-                    message.setDstSeNm(rs.getString("dst_se_nm"));
-                    message.setRegYmd(rs.getTimestamp("reg_ymd").toLocalDateTime());
-                    message.setMdfcnYmd(rs.getTimestamp("mdfcn_ymd").toLocalDateTime());
+                    message.setSn(rs.getString("문자ID"));
+
+                    // 발송 시간에 대한 null 체크 추가
+                    Timestamp crtDtTimestamp = rs.getTimestamp("발송_시간");
+                    message.setCrtDt(crtDtTimestamp != null ? crtDtTimestamp.toLocalDateTime() : null);
+
+                    message.setMsgCn(rs.getString("메시지_내용"));
+                    message.setRcptnRgnNm(rs.getString("발송_지역"));
+                    message.setEmrgStepNm(rs.getString("문자_유형"));
+                    message.setDstSeNm(rs.getString("재난_유형"));
+
+                    // regYmd와 mdfcnYmd에 대해서도 null 체크 추가
+                    Timestamp regYmdTimestamp = rs.getTimestamp("reg_ymd");
+                    message.setRegYmd(regYmdTimestamp != null ? regYmdTimestamp.toLocalDateTime() : null);
+
+                    Timestamp mdfcnYmdTimestamp = rs.getTimestamp("mdfcn_ymd");
+                    message.setMdfcnYmd(mdfcnYmdTimestamp != null ? mdfcnYmdTimestamp.toLocalDateTime() : null);
+
                     return message;
                 }
         );
